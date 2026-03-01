@@ -29,11 +29,11 @@ def emo_detector():
     if anger is None or disgust is None or fear is None or joy is None or sadness is None:
         return "Invalid input! Please try again!"
 
-    return {
+    return (
         f"For the given statement, the system response is 'anger': {anger}, "
         f"'disgust': {disgust}, 'fear': {fear}, 'joy': {joy} and " 
         f"'sadness': {sadness}. The dominant emotion is {dominant_emotion}."
-    }
+    )
 
 
 @app.route("/")
