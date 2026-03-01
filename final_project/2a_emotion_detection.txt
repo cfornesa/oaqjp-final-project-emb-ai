@@ -1,5 +1,0 @@
-def emotion_detector(text):
-    text_to_analyze = text
-    
-    # Return the original text as required
-    return text_to_analyze
