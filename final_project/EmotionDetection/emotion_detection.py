@@ -1,39 +1,21 @@
+import requests  # Import the requests library to handle HTTP requests
 import json
 
-def emotion_detector(text):
-    # Step 1: Assign input text to text_to_analyze (per requirement)
-    text_to_analyze = text
-    
-    # Step 2: Call the emotion analysis API/service with text_to_analyze
-    # (Replace the next line with actual call to your emotion detection service)
-    # For demonstration, let's simulate a JSON response string:
-    
-    # Simulated JSON response (in real case, replace this with actual API call)
-    json_response = '''
-    {
-        "anger": 0.1,
-        "disgust": 0.05,
-        "fear": 0.0,
-        "joy": 0.8,
-        "sadness": 0.05
-    }
-    '''
-    
-    # Step 3: Convert JSON string response to dictionary
-    response_dict = json.loads(json_response)
-    
-    # Step 4: Extract required emotions
-    emotions = {
-        'anger': response_dict.get('anger', 0),
-        'disgust': response_dict.get('disgust', 0),
-        'fear': response_dict.get('fear', 0),
-        'joy': response_dict.get('joy', 0),
-        'sadness': response_dict.get('sadness', 0)
-    }
-    
-    # Step 5: Find dominant emotion
-    dominant_emotion = max(emotions, key=emotions.get)
-    emotions['dominant_emotion'] = dominant_emotion
-    
-    # Step 6: Return the dictionary as required
-    return emotions
+def emotion_detector(text_to_analyse):  # Define a function named sentiment_analyzer that takes a string input (text_to_analyse)
+    url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'  # URL of the sentiment analysis service
+    myobj = { "raw_document": { "text": text_to_analyse } }  # Create a dictionary with the text to be analyzed
+    header = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}  # Set the headers required for the API request
+    response = requests.post(url, json = myobj, headers=header)  # Send a POST request to the API with the text and headers
+    formatted_response = json.loads(response.text)
+    emotions_dict = formatted_response['emotionPredictions'][0]['emotion']
+    emotions_list = list(emotions_dict.keys())
+    anger_score = emotions_dict['anger']
+    disgust_score = emotions_dict['disgust']
+    fear_score = emotions_dict['fear']
+    joy_score = emotions_dict['joy']
+    sadness_score = emotions_dict['sadness']
+    emotions = [anger_score, disgust_score, fear_score, joy_score, sadness_score]
+    max_value = max(emotions)
+    dominant_emotion = emotions_list[emotions.index(max_value)]
+    emotions_dict['dominant_emotion'] = dominant_emotion
+    return emotions_dict
